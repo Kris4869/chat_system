@@ -1,6 +1,6 @@
 """
-revision by Kris Chen
-nov. 23 2018
+Revision by Kris Chen
+Nov. 23 2018
 """
 
 
