@@ -30,6 +30,7 @@ keyboard=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r
 skeyboard=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','!','@','#','$','%','^','&','*','(',')',' ','<','>','?','{','}']
 
 
+
 class Chat:
 
     def __init__(self):
@@ -61,10 +62,27 @@ class Chat:
         c_thread.daemon = True
         c_thread.start()
 
+        clock = pygame.time.Clock()
+        while True:
+            self.update_members()
+            msg=self.read()
+            #if msg: print(msg)
+            if msg: self.client.read_input(msg)
+            msg = self.client.output()
+            #print(msg)
+            self.update(msg)
+            clock.tick(100)
+
 
     def read(self):
         #---------------------------------
         #Your code here
+        """
+        Add states and modify the read function
+        block keyboard input before click on a button
+        """
+
+        
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -132,6 +150,15 @@ class Chat:
                 print(self.chatlog)
         #----------------------------------
         #Your code here
+
+        """
+        Modify, in chat mode or not in chat mode
+        """
+
+
+
+
+        
         if self.first:
             self.windowSurface.fill(LBLUE)
             background=pygame.image.load('background3.jpg')
@@ -161,11 +188,7 @@ class Chat:
 
 
                 
-        elif self.chatting:
-
-
-
-            
+        elif self.chatting: 
             
             #print to screen
             self.windowSurface.fill(LBLUE)
@@ -223,10 +246,7 @@ class Chat:
 
             
 
-            
- 
-
-            
+                        
 
             #print chat log
             #if ((len(self.chatlog)-1) % 17)==0:
@@ -290,22 +310,58 @@ class Chat:
                 
         pygame.display.update()
         #-----------------------------------
+
+        def get_members(self):
+            return list(self.client.sm.get_members())
+
+        def create_button(self, name):
+            #----------------------------------
+            #Your code here:
+            pass
+            """
+            Create a button with name and click event
+            (which is calling g.client.read_input(msg),
+            where msg is e name if a member
+            or open a chat window to input index if is ? ... or p ... etc
+            the )
+            I don't know if you need to build a Button class 
+            """
+            #-----------------------------------
+            return button
+
+        def update_members(self):
+            member_list = self.get_members()
+            #-----------------------------------
+            #Your code here:
+            pass
+            """
+            show members
+            if people are chatting, put them together
+            also remember to show the ?, p, and a door to exit program etc ...
+            """
+            #update()
+            #------------------------------------
+
+        def show_chat_window(self):
+            #------------------------------------
+            #Your code here:
+            pass
+            """
+            show chat window
+            with an exit button (on click event is g.client.read_input('bye')
+            """
+            #------------------------------------
+
+
+
+
+            
 def main(args):
     g = Chat()
     g.run_client(args)
-    clock = pygame.time.Clock()
-    while True:
-        msg=g.read()
-        if msg: print(msg)
-        if msg: g.client.read_input(msg)
-        msg = g.client.output()
-        #print(msg)
-        g.update(msg)
-        clock.tick(100)
+
 
 if __name__ == "__main__":
     g = Chat()
-    while True:
-        msg = g.read()
-        g.update(msg)
+    g.run_client('0.0.0.0')
     
