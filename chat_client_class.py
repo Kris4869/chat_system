@@ -98,7 +98,7 @@ class Client:
         #self.system_msg += 'Please enter your name: '
         while self.login() != True:
             pass
-        self.system_msg += 'Welcome, ' + self.get_name() + '!'
+        #self.system_msg += 'Welcome, ' + self.get_name() + '!'
         while self.sm.get_state() != S_OFFLINE:
             self.proc()
             time.sleep(CHAT_WAIT)

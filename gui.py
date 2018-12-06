@@ -37,6 +37,8 @@ class Chat:
         pygame.init()
         #---------------------------------
         #Your code here
+        self.counters=[0]*100
+        self.tstring=''
         temp=''
         self.run=True
         self.chatting=True
@@ -118,7 +120,16 @@ class Chat:
 
     def update(self, msg):
         if msg != None:
-            self.chatlog.append(msg)
+            if len(msg) >120:
+                self.chatlog.append(msg[:60])
+                self.chatlog.append(msg[60:120])
+                self.chatlog.append(msg[120:])
+            elif len(msg) >60:
+                self.chatlog.append(msg[:60])
+                self.chatlog.append(msg[60:])
+            else:
+                self.chatlog.append(msg)
+                print(self.chatlog)
         #----------------------------------
         #Your code here
         if self.first:
@@ -164,14 +175,23 @@ class Chat:
             self.windowSurface.blit(background,(0,0))
 
             #print chatbar
-            pygame.draw.rect(self.windowSurface, WHITE, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.85, WINDOWH*0.09))
-            pygame.draw.rect(self.windowSurface, WHITE, pygame.Rect(WINDOWW*.9, WINDOWH*.9, WINDOWW*.05, WINDOWW*0.054))
+            #pygame.draw.rect(self.windowSurface, WHITE, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.85, WINDOWH*0.09))
+            #pygame.draw.rect(self.windowSurface, WHITE, pygame.Rect(WINDOWW*.9, WINDOWH*.9, WINDOWW*.05, WINDOWW*0.054))
             #white rect^
-            textSurfaceObj1 = self.fontObj.render(self.name+": "+str(self.text), True,BLACK)
-            textobj = textSurfaceObj1.get_rect()
-            textobj.left = (WINDOWW*.05)
-            textobj.top=(WINDOWH*.9)
-            self.windowSurface.blit(textSurfaceObj1, textobj)
+##            textSurfaceObj1 = self.fontObj.render(self.name+": "+str(self.text), True,BLACK)
+##            textobj = textSurfaceObj1.get_rect()
+##            textobj.left = (WINDOWW*.05)
+##            textobj.top=(WINDOWH*.9)
+##            self.windowSurface.blit(textSurfaceObj1, textobj)
+
+            try:
+
+                bar=trect.render_textrect(self.name+": "+str(self.text), self.fontObj30, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.9, WINDOWH*0.2),  (48, 48, 48),(216, 216, 216), 0)
+                self.windowSurface.blit(bar,(60,480))
+            except:
+                self.text=''
+                bar=trect.render_textrect(self.name+": "+str(self.text), self.fontObj30, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.9, WINDOWH*0.2),  (48, 48, 48),(216, 216, 216), 0)
+                self.windowSurface.blit(bar,(60,480))
 
             #print page no.
             textSurfaceObjpage = self.fontObj30.render("Page "+str(self.page), True,WHITE)
@@ -196,14 +216,12 @@ class Chat:
             
 
             #print enter key
-            enter=pygame.image.load('enter.png')
-            enter=pygame.transform.scale(enter, (int(WINDOWW*0.05), int(WINDOWW*0.05)))
-            self.windowSurface.blit(enter,(WINDOWW*0.9,WINDOWH*0.9))
+            #enter=pygame.image.load('enter.png')
+            #enter=pygame.transform.scale(enter, (int(WINDOWW*0.05), int(WINDOWW*0.05)))
+            #self.windowSurface.blit(enter,(WINDOWW*0.9,WINDOWH*0.9))
 
 
-            #test
-            hi=trect.render_textrect('hi', self.fontObj30, pygame.Rect((40, 40, 300, 300)), (216, 216, 216), (48, 48, 48), 0)
-            self.windowSurface.blit(hi,(60,60))
+            
 
             
  
@@ -211,18 +229,65 @@ class Chat:
             
 
             #print chat log
-            if ((len(self.chatlog)-1) % 17)==0:
-                self.page=int((len(self.chatlog)-1)/17)
-            if len(self.chatlog) > (self.page+1)*17:
-                counter=(self.page+1)*17
+            #if ((len(self.chatlog)-1) % 17)==0:
+            #    self.page=int((len(self.chatlog)-1)/17)
+            #if len(self.chatlog) > (self.page+1)*17:
+            #    counter=(self.page+1)*17
+            #else:
+            #    counter=len(self.chatlog)
+##            for i in range(self.page*17,counter):
+##                logobj=['']*len(self.chatlog)
+##                logobj[i]=self.fontObj30.render(str(self.chatlog[i]), True,BLACK).get_rect()
+##                logobj[i].left = WINDOWW*0.05
+##                logobj[i].top = 20+WINDOWH*0.05*(i-self.page*17)
+##                self.windowSurface.blit(self.fontObj30.render(str(self.chatlog[i]), True,WHITE),logobj[i])
+
+##            loop=True
+##            while loop:
+##                try:
+##                    self.counters[self.page]=len(self.chatlog)
+##                    if page!= 0:
+##                        for i in range(self.counters[self.page-1],self.counters[self.page]):
+##                            self.tstring+=self.chatlog[i]+'\n'
+##
+##                        #test
+##                        hi=trect.render_textrect(self.tstring, self.fontObj30, pygame.Rect((40, 40, 900, 400)), (216, 216, 216), (48, 48, 48), 0)
+##                        self.windowSurface.blit(hi,(60,60))
+##                        self.tstring=''
+##                        loop=False
+##                    else:
+##                        for i in range(0,self.counters[self.page]):
+##                            self.tstring+=self.chatlog[i]+'\n'
+##
+##                        #test
+##                        hi=trect.render_textrect(self.tstring, self.fontObj30, pygame.Rect((40, 40, 900, 400)), (216, 216, 216), (48, 48, 48), 0)
+##                        self.windowSurface.blit(hi,(60,60))
+##                        self.tstring=''
+##                        loop=False
+##                        
+##                except:
+##                    self.counters[self.page]-=1
+            
+            if ((len(self.chatlog)-1) % 12)==0:
+                self.page=int((len(self.chatlog)-1)/12)
+            if len(self.chatlog) > (self.page+1)*12:
+                counter=(self.page+1)*12
             else:
                 counter=len(self.chatlog)
-            for i in range(self.page*17,counter):
-                logobj=['']*len(self.chatlog)
-                logobj[i]=self.fontObj30.render(str(self.chatlog[i]), True,BLACK).get_rect()
-                logobj[i].left = WINDOWW*0.05
-                logobj[i].top = 20+WINDOWH*0.05*(i-self.page*17)
-                self.windowSurface.blit(self.fontObj30.render(str(self.chatlog[i]), True,WHITE),logobj[i])
+            for i in range(self.page*12,counter):
+                self.tstring+=self.chatlog[i]+'\n'
+            hi=trect.render_textrect(self.tstring, self.fontObj30, pygame.Rect((40, 40, 900, 420)), (216, 216, 216),(48,48,48),0)
+            self.windowSurface.blit(hi,(60,60))
+            self.tstring=''
+
+##            for i in self.chatlog:
+##                self.tstring+=i+'\n'
+##            hi=trect.render_textrect(self.tstring, self.fontObj30, pygame.Rect((40, 40, 900, 400)), (216, 216, 216), (48, 48, 48), 0)
+##            self.windowSurface.blit(hi,(60,60))
+##            self.tstring=''
+            
+                
+                
         pygame.display.update()
         #-----------------------------------
 def main(args):

@@ -47,23 +47,23 @@ class ClientSM:
         response = json.loads(myrecv(self.s))
         if response["status"] == "success":
             self.peer = peer
-            self.out_msg += 'You are connected with '+ self.peer + '\n'
+            self.out_msg += 'You are connected with '+ self.peer + ''
             self.members = response["members"]
             return (True)
         elif response["status"] == "busy":
-            self.out_msg += 'User is busy. Please try again later\n'
+            self.out_msg += 'User is busy. Please try again later'
         elif response["status"] == "self":
-            self.out_msg += 'Cannot talk to yourself (sick)\n'
+            self.out_msg += 'Cannot talk to yourself (sick)'
         elif response["status"] == "Security Error":
-            self.out_msg += "Security Alart: wrong crypto state\n"
+            self.out_msg += "Security Alart: wrong crypto state"
         else:
-            self.out_msg += 'User is not online, try again later\n'
+            self.out_msg += 'User is not online, try again later'
         return(False)
 
     def disconnect(self):
         msg = json.dumps({"action":"disconnect", "from": self.me})
         mysend(self.s, msg)
-        self.out_msg += 'You are disconnected from ' + self.peer + '\n'
+        self.out_msg += 'You are disconnected from ' + self.peer + ''
         self.peer = ''
 
     def proc(self, my_msg, peer_msg):
@@ -78,7 +78,7 @@ class ClientSM:
             if len(my_msg) > 0:
 
                 if my_msg == 'q':
-                    self.out_msg += 'See you next time!\n'
+                    self.out_msg += 'See you next time!'
                     self.state = S_OFFLINE
 
                 elif my_msg == 'time':
@@ -89,7 +89,7 @@ class ClientSM:
                 elif my_msg == 'who':
                     mysend(self.s, json.dumps({"action":"list"}))
                     logged_in = json.loads(myrecv(self.s))["results"]
-                    self.out_msg += 'Here are all the users in the system:\n'
+                    self.out_msg += 'Here are all the users in the system:'
                     self.out_msg += logged_in
 
                 elif my_msg[0] == 'c':
@@ -97,40 +97,40 @@ class ClientSM:
                     peer = peer.strip()
                     if self.connect_to(peer) == True:
                         self.state = S_CHATTING
-                        self.out_msg += '\nConnect to ' + peer + '. Chat away!\n'
-                        self.out_msg += '-\n'
+                        self.out_msg += 'Connect to ' + peer + '. Chat away'
+                        self.out_msg += ''
                     else:
-                        self.out_msg += 'Connection unsuccessful\n'
+                        self.out_msg += 'Connection unsuccessful'
 
                 elif my_msg[0] == 'e':
                     peer = my_msg[1:]
                     peer = peer.strip()
                     if self.connect_to(peer, True) == True:
                         self.state = S_ENCRYPTED
-                        self.out_msg += 'Connect to ' + peer + '. Chat away!\n\n'
-                        self.out_msg += 'The conversation is encrypted by Elliptic-curve Cryptography\n'
-                        self.out_msg += 'No history will be recorded.\n'
-                        self.out_msg += '-\n'
+                        self.out_msg += 'Connect to ' + peer + '. Chat away!'
+                        self.out_msg += 'The conversation is encrypted by Elliptic-curve Cryptography'
+                        self.out_msg += 'No history will be recorded.'
+                        self.out_msg += ''
                     else:
-                        self.out_msg += 'Connection unsuccessful\n'
+                        self.out_msg += 'Connection unsuccessful'
 
                 elif my_msg[0] == '?':
                     term = my_msg[1:].strip()
                     mysend(self.s, json.dumps({"action":"search", "target":term}))
                     search_rslt = json.loads(myrecv(self.s))["results"].strip()
                     if (len(search_rslt)) > 0:
-                        self.out_msg += search_rslt + '\n\n'
+                        self.out_msg += search_rslt + ''
                     else:
-                        self.out_msg += '\'' + term + '\'' + ' not found\n\n'
+                        self.out_msg += '\'' + term + '\'' + ' not found'
 
                 elif my_msg[0] == 'p' and my_msg[2:].isdigit(): #Kris Nov 17 2018: 1 -> 2
                     poem_idx = my_msg[1:].strip()
                     mysend(self.s, json.dumps({"action":"poem", "target":poem_idx}))
                     poem = json.loads(myrecv(self.s))["results"]
                     if (len(poem) > 0):
-                        self.out_msg += poem + '\n\n'
+                        self.out_msg += poem + ''
                     else:
-                        self.out_msg += 'Sonnet ' + poem_idx + ' not found\n\n'
+                        self.out_msg += 'Sonnet ' + poem_idx + ' not found'
 
                 else:
                     self.out_msg += menu
@@ -144,18 +144,18 @@ class ClientSM:
             
                 if peer_msg["action"] == "connect":
                     if peer_msg["status"] == "request":
-                        self.out_msg += peer_msg["from"] + " has joined the chat.\n"
+                        self.out_msg += peer_msg["from"] + " has joined the chat."
                         self.members[peer_msg["from"]] = peer_msg["qk"]
                         self.state = S_ENCRYPTED if peer_msg["encryption"] else S_CHATTING
                         if len(self.members) == 1:
-                            self.out_msg += "The conversation is encrypted by Elliptic-curve Cryptography\n"
-                            self.out_msg += 'No history will be recorded.\n'
-                            self.out_msg += '-\n'
+                            self.out_msg += "The conversation is encrypted by Elliptic-curve Cryptography"
+                            self.out_msg += 'No history will be recorded.'
+                            self.out_msg += ''
                     elif peer_msg["status"] == "no-user":
                         self.peer = ''
-                        self.out_msg += "[ChatSystem]: No such user.\n"
+                        self.out_msg += "[ChatSystem]: No such user."
                     else:
-                        self.out_msg += "[ChatSystem]: How did you wind up here??\n"
+                        self.out_msg += "[ChatSystem]: How did you wind up here??"
                         print_state(peer_msg["status"])
                     
 #==============================================================================
@@ -189,7 +189,7 @@ class ClientSM:
                 #print(peer_msg)
                 try:
                     if peer_msg["status"] == "request":
-                        self.out_msg += peer_msg["from"] + " has joined the chat.\n"
+                        self.out_msg += peer_msg["from"] + " has joined the chat."
                         self.members[peer_msg["from"]] = peer_msg["qk"]
                 except KeyError:
                     if peer_msg["action"] == "exchange" and self.state == S_CHATTING:
@@ -200,7 +200,7 @@ class ClientSM:
                     elif peer_msg["action"] == "disconnect":
                         self.out_msg += peer_msg["msg"] + "\n"
                     else:
-                        self.out_msg += "[ChatSystem]: How did you wind up here??\n"
+                        self.out_msg += "[ChatSystem]: How did you wind up here??"
                         print_state(peer_msg["action"])
                 
             # Display the menu again
@@ -211,7 +211,7 @@ class ClientSM:
 # invalid state
 #==============================================================================
         else:
-            self.out_msg += '[ChatSystem]: How did you wind up here??\n'
+            self.out_msg += '[ChatSystem]: How did you wind up here??'
             print_state(self.state)
 
         return self.out_msg 

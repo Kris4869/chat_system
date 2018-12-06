@@ -128,9 +128,7 @@ class Server:
 # ==============================================================================
             elif msg["action"] == "exchange" and not msg["encryption"]:
                 from_name = self.logged_sock2name[from_sock]
-                """
-                Finding the list of people to send to and index message
-                """
+                """Finding the list of people to send to and index message"""
                 
                 self.indices[from_name].add_msg_and_index(msg["message"])
 
@@ -208,7 +206,7 @@ class Server:
                 if not search_rslt:
                     search_rslt = ''
                 else:
-                    search_rslt = '\n' + str(search_rslt)
+                    search_rslt = '' + str(search_rslt)
                 print('server side search: ' + search_rslt)
                 # ---- end of your code --- #
                 mysend(from_sock, json.dumps(
