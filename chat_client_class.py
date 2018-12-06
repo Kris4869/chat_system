@@ -94,8 +94,8 @@ class Client:
 
     def run_chat(self):
         self.init_chat()
-        self.system_msg += 'Welcome to ICS chat\n'
-        self.system_msg += 'Please enter your name: '
+        #self.system_msg += 'Welcome to ICS chat '
+        #self.system_msg += 'Please enter your name: '
         while self.login() != True:
             pass
         self.system_msg += 'Welcome, ' + self.get_name() + '!'

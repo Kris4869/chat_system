@@ -98,7 +98,7 @@ class ClientSM:
                     if self.connect_to(peer) == True:
                         self.state = S_CHATTING
                         self.out_msg += '\nConnect to ' + peer + '. Chat away!\n'
-                        self.out_msg += '---------------------------------------------------------------\n'
+                        self.out_msg += '-\n'
                     else:
                         self.out_msg += 'Connection unsuccessful\n'
 
@@ -110,7 +110,7 @@ class ClientSM:
                         self.out_msg += 'Connect to ' + peer + '. Chat away!\n\n'
                         self.out_msg += 'The conversation is encrypted by Elliptic-curve Cryptography\n'
                         self.out_msg += 'No history will be recorded.\n'
-                        self.out_msg += '---------------------------------------------------------------\n'
+                        self.out_msg += '-\n'
                     else:
                         self.out_msg += 'Connection unsuccessful\n'
 
@@ -150,7 +150,7 @@ class ClientSM:
                         if len(self.members) == 1:
                             self.out_msg += "The conversation is encrypted by Elliptic-curve Cryptography\n"
                             self.out_msg += 'No history will be recorded.\n'
-                            self.out_msg += '-------------------------------------------------------------\n'
+                            self.out_msg += '-\n'
                     elif peer_msg["status"] == "no-user":
                         self.peer = ''
                         self.out_msg += "[ChatSystem]: No such user.\n"

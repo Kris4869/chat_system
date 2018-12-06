@@ -4,6 +4,7 @@
 import pygame, sys, random
 from pygame.locals import *
 from chat_client_class import *
+import textrect as trect
 
 
 BLACK = (0, 0, 0)
@@ -32,6 +33,7 @@ skeyboard=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','
 class Chat:
 
     def __init__(self):
+
         pygame.init()
         #---------------------------------
         #Your code here
@@ -94,7 +96,7 @@ class Chat:
                         self.text=''
                         return self.name
                     else:
-                        self.chatlog.append({'msg':self.text,'from':self.name})
+                        self.chatlog.append(self.text)
                         #insert function to send msg to chat server
                         #client.read_input(text)
                         self.temp=self.text
@@ -115,6 +117,8 @@ class Chat:
         
 
     def update(self, msg):
+        if msg != None:
+            self.chatlog.append(msg)
         #----------------------------------
         #Your code here
         if self.first:
@@ -130,6 +134,10 @@ class Chat:
             textobj.left = (WINDOWW*.05)
             textobj.top=(WINDOWH*.5)
             self.windowSurface.blit(textSurfaceObj1, textobj)
+
+            
+
+
             
             enter=pygame.image.load('enter.png')
             enter=pygame.transform.scale(enter, (int(WINDOWW*0.05), int(WINDOWW*0.05)))
@@ -143,6 +151,11 @@ class Chat:
 
                 
         elif self.chatting:
+
+
+
+            
+            
             #print to screen
             self.windowSurface.fill(LBLUE)
             #background
@@ -188,6 +201,15 @@ class Chat:
             self.windowSurface.blit(enter,(WINDOWW*0.9,WINDOWH*0.9))
 
 
+            #test
+            hi=trect.render_textrect('hi', self.fontObj30, pygame.Rect((40, 40, 300, 300)), (216, 216, 216), (48, 48, 48), 0)
+            self.windowSurface.blit(hi,(60,60))
+
+            
+ 
+
+            
+
             #print chat log
             if ((len(self.chatlog)-1) % 17)==0:
                 self.page=int((len(self.chatlog)-1)/17)
@@ -197,12 +219,10 @@ class Chat:
                 counter=len(self.chatlog)
             for i in range(self.page*17,counter):
                 logobj=['']*len(self.chatlog)
-                logobj[i]=self.fontObj30.render(self.chatlog[i]['from']+": "+str(self.chatlog[i]['msg']), True,BLACK).get_rect()
+                logobj[i]=self.fontObj30.render(str(self.chatlog[i]), True,BLACK).get_rect()
                 logobj[i].left = WINDOWW*0.05
                 logobj[i].top = 20+WINDOWH*0.05*(i-self.page*17)
-
-                self.windowSurface.blit(self.fontObj30.render(self.chatlog[i]['from']+": "+str(self.chatlog[i]['msg']), True,WHITE),logobj[i])
-        
+                self.windowSurface.blit(self.fontObj30.render(str(self.chatlog[i]), True,WHITE),logobj[i])
         pygame.display.update()
         #-----------------------------------
 def main(args):
