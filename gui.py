@@ -106,7 +106,7 @@ class Chat:
                         self.text=''
                         return self.name
                     else:
-                        self.chatlog.append(self.text)
+                        self.chatlog.append('['+self.name+']'+self.text)
                         #insert function to send msg to chat server
                         #client.read_input(text)
                         self.temp=self.text
