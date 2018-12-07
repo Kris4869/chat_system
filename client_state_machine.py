@@ -108,7 +108,7 @@ class ClientSM:
                     if self.connect_to(peer, True) == True:
                         self.state = S_ENCRYPTED
                         self.out_msg += 'Connect to ' + peer + '. Chat away!'
-                        self.out_msg += 'The conversation is encrypted by Elliptic-curve Cryptography'
+                        self.out_msg += 'The conversation is encrypted by Elliptic-curve Cryptography. '
                         self.out_msg += 'No history will be recorded.'
                         self.out_msg += ''
                     else:

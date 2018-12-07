@@ -13,7 +13,7 @@ RED = (255, 51, 51)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 DPURPLE = (150,0,80)
-PURPLE = (200,0,200)
+PURPLE = (201,167,223)
 YELLOW =(255,255,51)
 LBLUE =(204,255,255)
 DBLUE=(0,0,102)
@@ -30,7 +30,6 @@ keyboard=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r
 skeyboard=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','!','@','#','$','%','^','&','*','(',')',' ','<','>','?','{','}']
 
 
-
 class Chat:
 
     def __init__(self):
@@ -38,11 +37,12 @@ class Chat:
         pygame.init()
         #---------------------------------
         #Your code here
+        self.button = pygame.Rect(100, 100, 50, 50)
         self.counters=[0]*100
         self.tstring=''
         temp=''
         self.run=True
-        self.chatting=True
+        self.chatting=False
         self.text= ''
         self.fontObj = pygame.font.Font('freesansbold.ttf', 50)
         self.fontObj30 = pygame.font.Font('freesansbold.ttf', 30)
@@ -62,31 +62,21 @@ class Chat:
         c_thread.daemon = True
         c_thread.start()
 
-        clock = pygame.time.Clock()
-        while True:
-            self.update_members()
-            msg=self.read()
-            #if msg: print(msg)
-            if msg: self.client.read_input(msg)
-            msg = self.client.output()
-            #print(msg)
-            self.update(msg)
-            clock.tick(100)
-
 
     def read(self):
         #---------------------------------
         #Your code here
-        """
-        Add states and modify the read function
-        block keyboard input before click on a button
-        """
-
-        
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos  # gets mouse position
+
+                # checks if mouse position is over the button
+
+                if self.button.collidepoint(mouse_pos):
+                    self.chatting = True
             if event.type == KEYDOWN:
                 if event.key == K_RSHIFT or event.key== K_LSHIFT:
                     if self.shift:
@@ -147,18 +137,8 @@ class Chat:
                 self.chatlog.append(msg[60:])
             else:
                 self.chatlog.append(msg)
-                print(self.chatlog)
         #----------------------------------
         #Your code here
-
-        """
-        Modify, in chat mode or not in chat mode
-        """
-
-
-
-
-        
         if self.first:
             self.windowSurface.fill(LBLUE)
             background=pygame.image.load('background3.jpg')
@@ -188,7 +168,11 @@ class Chat:
 
 
                 
-        elif self.chatting: 
+        elif self.chatting:
+
+
+
+            
             
             #print to screen
             self.windowSurface.fill(LBLUE)
@@ -209,32 +193,32 @@ class Chat:
 
             try:
 
-                bar=trect.render_textrect(self.name+": "+str(self.text), self.fontObj30, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.9, WINDOWH*0.2),  (48, 48, 48),(216, 216, 216), 0)
-                self.windowSurface.blit(bar,(60,480))
+                bar=trect.render_textrect(self.name+": "+str(self.text), self.fontObj30, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.9, WINDOWH*0.2),  (96, 36, 134),(216, 216, 216), 0)
+                self.windowSurface.blit(bar,(50,480))
             except:
                 self.text=''
-                bar=trect.render_textrect(self.name+": "+str(self.text), self.fontObj30, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.9, WINDOWH*0.2),  (48, 48, 48),(216, 216, 216), 0)
-                self.windowSurface.blit(bar,(60,480))
+                bar=trect.render_textrect(self.name+": "+str(self.text), self.fontObj30, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.9, WINDOWH*0.2),  (96, 36,134),(216, 216, 216), 0)
+                self.windowSurface.blit(bar,(50,480))
 
             #print page no.
-            textSurfaceObjpage = self.fontObj30.render("Page "+str(self.page), True,WHITE)
+            textSurfaceObjpage = self.fontObj30.render("Page "+str(self.page), True,PURPLE)
             textobjpage = textSurfaceObjpage.get_rect()
             textobjpage.left = (WINDOWW*.85)
-            textobjpage.top=(WINDOWH*.05)
+            textobjpage.top=(WINDOWH*.04)
             self.windowSurface.blit(textSurfaceObjpage, textobjpage)
             
             #print current member
-            textSurfaceObjmember = self.fontObj30.render("member:", True,WHITE)
-            textobjmember = textSurfaceObjmember.get_rect()
-            textobjmember.left = (WINDOWW*.85)
-            textobjmember.top=(WINDOWH*.3)
-            self.windowSurface.blit(textSurfaceObjmember, textobjmember)
-
-            textSurfaceObjname = self.fontObj30.render(self.name, True,WHITE)
-            textobjname = textSurfaceObjpage.get_rect()
-            textobjname.left = (WINDOWW*.85)
-            textobjname.top=(WINDOWH*.4)
-            self.windowSurface.blit(textSurfaceObjname, textobjname)
+##            textSurfaceObjmember = self.fontObj30.render("member:", True,WHITE)
+##            textobjmember = textSurfaceObjmember.get_rect()
+##            textobjmember.left = (WINDOWW*.85)
+##            textobjmember.top=(WINDOWH*.3)
+##            self.windowSurface.blit(textSurfaceObjmember, textobjmember)
+##
+##            textSurfaceObjname = self.fontObj30.render(self.name, True,WHITE)
+##            textobjname = textSurfaceObjpage.get_rect()
+##            textobjname.left = (WINDOWW*.85)
+##            textobjname.top=(WINDOWH*.4)
+##            self.windowSurface.blit(textSurfaceObjname, textobjname)
 
             
 
@@ -246,7 +230,10 @@ class Chat:
 
             
 
-                        
+            
+ 
+
+            
 
             #print chat log
             #if ((len(self.chatlog)-1) % 17)==0:
@@ -296,8 +283,8 @@ class Chat:
                 counter=len(self.chatlog)
             for i in range(self.page*12,counter):
                 self.tstring+=self.chatlog[i]+'\n'
-            hi=trect.render_textrect(self.tstring, self.fontObj30, pygame.Rect((40, 40, 900, 420)), (216, 216, 216),(48,48,48),0)
-            self.windowSurface.blit(hi,(60,60))
+            hi=trect.render_textrect(self.tstring, self.fontObj30, pygame.Rect((40, 40, 900, 420)), (227, 203, 242),(48,48,48),0)
+            self.windowSurface.blit(hi,(50,60))
             self.tstring=''
 
 ##            for i in self.chatlog:
@@ -305,63 +292,36 @@ class Chat:
 ##            hi=trect.render_textrect(self.tstring, self.fontObj30, pygame.Rect((40, 40, 900, 400)), (216, 216, 216), (48, 48, 48), 0)
 ##            self.windowSurface.blit(hi,(60,60))
 ##            self.tstring=''
+        else:
+            self.windowSurface.fill(LBLUE)
+            background2=pygame.image.load('background2.jpg')
+            background2=pygame.transform.scale(background2, (WINDOWW,WINDOWH))
+            self.windowSurface.blit(background2,(0,0))
+            
+            
+            pygame.draw.rect(self.windowSurface, [255, 0, 0], self.button)
+            
             
                 
                 
         pygame.display.update()
         #-----------------------------------
-
-        def get_members(self):
-            return list(self.client.sm.get_members())
-
-        def create_button(self, name):
-            #----------------------------------
-            #Your code here:
-            pass
-            """
-            Create a button with name and click event
-            (which is calling g.client.read_input(msg),
-            where msg is e name if a member
-            or open a chat window to input index if is ? ... or p ... etc
-            the )
-            I don't know if you need to build a Button class 
-            """
-            #-----------------------------------
-            return button
-
-        def update_members(self):
-            member_list = self.get_members()
-            #-----------------------------------
-            #Your code here:
-            pass
-            """
-            show members
-            if people are chatting, put them together
-            also remember to show the ?, p, and a door to exit program etc ...
-            """
-            #update()
-            #------------------------------------
-
-        def show_chat_window(self):
-            #------------------------------------
-            #Your code here:
-            pass
-            """
-            show chat window
-            with an exit button (on click event is g.client.read_input('bye')
-            """
-            #------------------------------------
-
-
-
-
-            
 def main(args):
     g = Chat()
     g.run_client(args)
-
+    clock = pygame.time.Clock()
+    while True:
+        msg=g.read()
+        if msg: print(msg)
+        if msg: g.client.read_input(msg)
+        msg = g.client.output()
+        #print(msg)
+        g.update(msg)
+        clock.tick(100)
 
 if __name__ == "__main__":
     g = Chat()
-    g.run_client('0.0.0.0')
+    while True:
+        msg = g.read()
+        g.update(msg)
     
