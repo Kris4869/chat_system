@@ -29,6 +29,9 @@ WINDOWH = 600
 keyboard=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0',' ',',','.','/','[',']']
 skeyboard=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','!','@','#','$','%','^','&','*','(',')',' ','<','>','?','{','}']
 
+S_WANDERING = 0
+S_CHATTING = 1
+
 
 class Chat:
 
@@ -62,7 +65,30 @@ class Chat:
         c_thread.daemon = True
         c_thread.start()
 
+        clock = pygame.time.Clock()
+        while True:
+            self.show_members()
+            msg=g.read()
+            if msg: print(msg)
+            if msg: g.client.read_input(msg)
+            msg = g.client.output()
+            #print(msg)
+            g.update(msg)
+            clock.tick(100)
 
+    def get_members(self):
+        return eval(g.client.read_input('who'))
+
+    def show_members(self):
+        members = self.get_members()
+        #--------------------------------------------
+        pass
+        """
+        Directly update result here
+        """
+        #self.update
+        #____________________________________________
+        
     def read(self):
         #---------------------------------
         #Your code here
@@ -309,15 +335,7 @@ class Chat:
 def main(args):
     g = Chat()
     g.run_client(args)
-    clock = pygame.time.Clock()
-    while True:
-        msg=g.read()
-        if msg: print(msg)
-        if msg: g.client.read_input(msg)
-        msg = g.client.output()
-        #print(msg)
-        g.update(msg)
-        clock.tick(100)
+
 
 if __name__ == "__main__":
     g = Chat()
