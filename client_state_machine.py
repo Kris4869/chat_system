@@ -169,6 +169,17 @@ class ClientSM:
                 self.out_msg += str(self.showallqk()) + str(self.get_keypair().get_public_key())
             elif my_msg == "#!MyKeypair":
                 self.out_msg += str(self.get_keypair().get_keypair())
+            elif my_msg[:3] == "#!T":
+                path = my_msg[3:]
+                name = os.path.basename(path)
+                try:
+                    with open(path.strip(), 'rb') as file:
+                        bins = str(file.read())
+                        mysend(self.s, json.dumps(
+                            {"action": "transfer", "content": bins, "filename": name, "from": self.me}))
+                    self.out_msg += "Transfer finished"    
+                except FileNotFoundError:
+                    self.out_msg += "File doesn't exist."
             elif len(my_msg) > 0 and self.state == S_CHATTING:     # my stuff going out
                 mysend(self.s, json.dumps({"action":"exchange", "from":"[" + self.me + "]", "message":my_msg, "encryption": False}))
                 if my_msg == 'bye':
@@ -192,7 +203,11 @@ class ClientSM:
                         self.out_msg += peer_msg["from"] + " has joined the chat."
                         self.members[peer_msg["from"]] = peer_msg["qk"]
                 except KeyError:
-                    if peer_msg["action"] == "exchange" and self.state == S_CHATTING:
+                    if peer_msg["action"] == "transfer":
+                        with open(peer_msg["filename"], 'wb') as file:
+                            file.write(eval(peer_msg["content"]))
+                        self.out_msg += peer_msg["from"] + " transfered file: '" + peer_msg["filename"] + "' to you."
+                    elif peer_msg["action"] == "exchange" and self.state == S_CHATTING:
                         self.out_msg += peer_msg["from"] + ": " + peer_msg["message"]
                     elif peer_msg["action"] == "exchange" and self.state == S_ENCRYPTED:
                         msg = MsgECC(peer_msg["message"], peer_msg["tqk"], self.keypair.get_private_key()).decrypt()
@@ -200,9 +215,8 @@ class ClientSM:
                     elif peer_msg["action"] == "disconnect":
                         self.out_msg += peer_msg["msg"] + "\n"
                     else:
-                        self.out_msg += "[ChatSystem]: How did you wind up here??"
+                        self.out_msg += "[ChatSystem]: How did you wind up here??\n"
                         print_state(peer_msg["action"])
-                
             # Display the menu again
             if self.state == S_LOGGEDIN:
                 self.out_msg += menu

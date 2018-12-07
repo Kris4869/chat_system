@@ -126,6 +126,11 @@ class Server:
 # ==============================================================================
 # handle messeage exchange: IMPLEMENT THIS
 # ==============================================================================
+            elif msg["action"] == "transfer":
+                the_guys = self.group.list_me(from_name)[1:]
+                for g in the_guys:
+                    to_sock = self.logged_name2sock[g]
+                    mysend(to_sock, json.dumps(msg))
             elif msg["action"] == "exchange" and not msg["encryption"]:
                 from_name = self.logged_sock2name[from_sock]
                 """Finding the list of people to send to and index message"""
