@@ -40,7 +40,7 @@ class Chat:
         pygame.init()
         #---------------------------------
         #Your code here
-        self.button = pygame.Rect(100, 100, 50, 50)
+        self.button =[]
         self.counters=[0]*100
         self.tstring=''
         temp=''
@@ -87,7 +87,12 @@ class Chat:
             members = eval(self.get_members())
             #--------------------------------------------
             pass
-            print(members)
+            
+            self.button=[]
+            for member in members[0].keys():
+                print(member)
+                self.button.append({'name':str(member),'rect':pygame.Rect(100, 100, 50, 50)})
+            #print(self.button)
             """
             Directly update result here
             """
@@ -107,9 +112,12 @@ class Chat:
                 mouse_pos = event.pos  # gets mouse position
 
                 # checks if mouse position is over the button
+                for i in self.button:
 
-                if self.button.collidepoint(mouse_pos):
-                    self.chatting = True
+                    if i['rect'].collidepoint(mouse_pos):
+                        #self.chatting = True
+                        self.client.read_input('c '+ i['name'])
+                        
             if event.type == KEYDOWN:
                 if event.key == K_RSHIFT or event.key== K_LSHIFT:
                     if self.shift:
@@ -131,11 +139,11 @@ class Chat:
                 if len(self.text) > 0 and event.key == K_BACKSPACE:
                     self.text=self.text[:-1]
                 if len(self.text) > 0 and event.key == K_RETURN:
-                    if self.first:
+                    if self.get_state() == S_OFFLINE:
                         self.name=self.text
                         self.text=''
                         #client.login(name)
-                        self.first=False
+                        #self.first=False
                         self.text=''
                         return self.name
                     else:
@@ -331,8 +339,9 @@ class Chat:
             background2=pygame.transform.scale(background2, (WINDOWW,WINDOWH))
             self.windowSurface.blit(background2,(0,0))
             
-            
-            pygame.draw.rect(self.windowSurface, [255, 0, 0], self.button)
+            for i in self.button:
+                if i['name'] != self.name:
+                    pygame.draw.rect(self.windowSurface, [255, 0, 0], i['rect'])
             
             
                 
