@@ -54,6 +54,7 @@ class Chat:
         self.logobj=[]
         self.name=''
         self.page=0
+        self.shift = False
         #---------------------------------
 
     def run_client(self, args):
@@ -200,7 +201,7 @@ class Chat:
 
 
                 
-        elif self.get_state() == S_CHATTING:
+        elif self.get_state() in (S_CHATTING, S_ENCRYPTED):
 
 
 
