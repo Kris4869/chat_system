@@ -5,6 +5,7 @@ import pygame, sys, random
 from pygame.locals import *
 from chat_client_class import *
 import textrect as trect
+from chat_utils import *
 
 
 BLACK = (0, 0, 0)
@@ -29,8 +30,7 @@ WINDOWH = 600
 keyboard=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0',' ',',','.','/','[',']']
 skeyboard=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','!','@','#','$','%','^','&','*','(',')',' ','<','>','?','{','}']
 
-S_WANDERING = 0
-S_CHATTING = 1
+
 
 
 class Chat:
@@ -68,16 +68,20 @@ class Chat:
         clock = pygame.time.Clock()
         while True:
             self.show_members()
-            msg=g.read()
-            if msg: print(msg)
-            if msg: g.client.read_input(msg)
-            msg = g.client.output()
+            msg=self.read()
+            #if msg: print(msg)
+            if msg: self.client.read_input(msg)
+            msg = self.client.output() if self.get_state() != S_LOGGEDIN else None 
             #print(msg)
-            g.update(msg)
+            self.update(msg)
             clock.tick(100)
 
+    def get_state(self):
+        return self.client.get_state()
+
     def get_members(self):
-        return eval(g.client.read_input('who'))
+        self.client.read_input('who')
+        return eval(self.client.output())
 
     def show_members(self):
         members = self.get_members()

@@ -40,6 +40,9 @@ class Client:
     def shutdown_chat(self):
         return
 
+    def get_state(self):
+        return self.sm.get_state()
+
     def send(self, msg):
         mysend(self.socket, msg)
 
