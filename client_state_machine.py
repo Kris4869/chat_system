@@ -89,8 +89,7 @@ class ClientSM:
                 elif my_msg == 'who':
                     mysend(self.s, json.dumps({"action":"list"}))
                     logged_in = json.loads(myrecv(self.s))["results"]
-                    self.out_msg += 'Here are all the users in the system:'
-                    self.out_msg += logged_in
+                    self.out_msg += str(logged_in)
 
                 elif my_msg[0] == 'c':
                     peer = my_msg[1:]
@@ -217,9 +216,6 @@ class ClientSM:
                     else:
                         self.out_msg += "[ChatSystem]: How did you wind up here??\n"
                         print_state(peer_msg["action"])
-            # Display the menu again
-            if self.state == S_LOGGEDIN:
-                self.out_msg += menu
 
 #==============================================================================
 # invalid state

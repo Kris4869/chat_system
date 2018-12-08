@@ -45,7 +45,6 @@ class Chat:
         self.tstring=''
         temp=''
         self.run=True
-        self.chatting=False
         self.text= ''
         self.fontObj = pygame.font.Font('freesansbold.ttf', 50)
         self.fontObj30 = pygame.font.Font('freesansbold.ttf', 30)
@@ -53,9 +52,7 @@ class Chat:
         pygame.display.set_caption('Chat')
         self.chatlog=[]
         self.logobj=[]
-        self.first=True
         self.name=''
-        self.shift=False
         self.page=0
         #---------------------------------
 
@@ -67,13 +64,14 @@ class Chat:
 
         clock = pygame.time.Clock()
         while True:
-            self.show_members()
-            msg=self.read()
+            msg = self.read()
             #if msg: print(msg)
             if msg: self.client.read_input(msg)
-            msg = self.client.output() if self.get_state() != S_LOGGEDIN else None 
+            msg = self.client.output()
             #print(msg)
+            if self.get_state() == S_LOGGEDIN: msg = None
             self.update(msg)
+            if self.get_state() == S_LOGGEDIN: self.show_members()
             clock.tick(100)
 
     def get_state(self):
@@ -84,15 +82,18 @@ class Chat:
         return self.client.output()
 
     def show_members(self):
-        members = self.get_members()
-        #--------------------------------------------
-        pass
-        #print(members)
-        """
-        Directly update result here
-        """
-        #self.update
-        #____________________________________________
+        try:
+            members = eval(self.get_members())
+            #--------------------------------------------
+            pass
+            print(members)
+            """
+            Directly update result here
+            """
+            #self.update
+            #____________________________________________
+        except:
+            pass
         
     def read(self):
         #---------------------------------
@@ -170,7 +171,7 @@ class Chat:
                 self.chatlog.append(msg)
         #----------------------------------
         #Your code here
-        if self.first:
+        if self.get_state() == S_OFFLINE:
             self.windowSurface.fill(LBLUE)
             background=pygame.image.load('background3.jpg')
             background=pygame.transform.scale(background, (WINDOWW,WINDOWH))
@@ -199,7 +200,7 @@ class Chat:
 
 
                 
-        elif self.chatting:
+        elif self.get_state() == S_CHATTING:
 
 
 
@@ -323,7 +324,7 @@ class Chat:
 ##            hi=trect.render_textrect(self.tstring, self.fontObj30, pygame.Rect((40, 40, 900, 400)), (216, 216, 216), (48, 48, 48), 0)
 ##            self.windowSurface.blit(hi,(60,60))
 ##            self.tstring=''
-        else:
+        elif self.get_state() == S_LOGGEDIN:
             self.windowSurface.fill(LBLUE)
             background2=pygame.image.load('background2.jpg')
             background2=pygame.transform.scale(background2, (WINDOWW,WINDOWH))
