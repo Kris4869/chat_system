@@ -5,18 +5,17 @@ import pygame, sys, random
 from pygame.locals import *
 from chat_client_class import *
 import textrect as trect
-from chat_utils import *
 
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 51, 51)
-GREEN = (0, 255, 0)
+GREEN = (131,233,138)
 BLUE = (0, 0, 255)
 DPURPLE = (150,0,80)
 PURPLE = (201,167,223)
 YELLOW =(255,255,51)
-LBLUE =(204,255,255)
+LBLUE =(124,161,247)
 DBLUE=(0,0,102)
 ORANGE=(255, 100, 50)
 GREEN2=(0,153,76)
@@ -31,8 +30,6 @@ keyboard=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r
 skeyboard=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','!','@','#','$','%','^','&','*','(',')',' ','<','>','?','{','}']
 
 
-
-
 class Chat:
 
     def __init__(self):
@@ -40,21 +37,27 @@ class Chat:
         pygame.init()
         #---------------------------------
         #Your code here
-        self.button =[]
+        self.button = pygame.Rect(100, 250, 200, 200)
+        self.button2 = pygame.Rect(400, 250, 200, 200)
+        self.button3 = pygame.Rect(700, 250, 200, 200)
         self.counters=[0]*100
         self.tstring=''
+        self.wallpaper='background.jpg'
         temp=''
         self.run=True
+        self.chatting=False
         self.text= ''
         self.fontObj = pygame.font.Font('freesansbold.ttf', 50)
         self.fontObj30 = pygame.font.Font('freesansbold.ttf', 30)
         self.windowSurface = pygame.display.set_mode((WINDOWW, WINDOWH), 0, 32)
-        pygame.display.set_caption('Chat')
+        pygame.display.set_caption('ICS Chat System')
         self.chatlog=[]
         self.logobj=[]
+        self.first=True
         self.name=''
+        self.shift=False
         self.page=0
-        self.shift = False
+        self.color=PURPLE
         #---------------------------------
 
     def run_client(self, args):
@@ -63,44 +66,7 @@ class Chat:
         c_thread.daemon = True
         c_thread.start()
 
-        clock = pygame.time.Clock()
-        while True:
-            msg = self.read()
-            #if msg: print(msg)
-            if msg: self.client.read_input(msg)
-            msg = self.client.output()
-            #print(msg)
-            if self.get_state() == S_LOGGEDIN: msg = None
-            self.update(msg)
-            if self.get_state() == S_LOGGEDIN: self.show_members()
-            clock.tick(100)
 
-    def get_state(self):
-        return self.client.get_state()
-
-    def get_members(self):
-        self.client.read_input('who')
-        return self.client.output()
-
-    def show_members(self):
-        try:
-            members = eval(self.get_members())
-            #--------------------------------------------
-            pass
-            
-            self.button=[]
-            for member in members[0].keys():
-                print(member)
-                self.button.append({'name':str(member),'rect':pygame.Rect(100, 100, 50, 50)})
-            #print(self.button)
-            """
-            Directly update result here
-            """
-            #self.update
-            #____________________________________________
-        except:
-            pass
-        
     def read(self):
         #---------------------------------
         #Your code here
@@ -112,12 +78,22 @@ class Chat:
                 mouse_pos = event.pos  # gets mouse position
 
                 # checks if mouse position is over the button
-                for i in self.button:
 
-                    if i['rect'].collidepoint(mouse_pos):
-                        #self.chatting = True
-                        self.client.read_input('c '+ i['name'])
-                        
+                if self.button.collidepoint(mouse_pos):
+                    #NYU Skin
+                    self.wallpaper='background.jpg'
+                    self.chatting = True
+                    self.color=PURPLE
+                if self.button2.collidepoint(mouse_pos):
+                    #Chrismas Skin
+                    self.wallpaper='xmas.jpg'
+                    self.chatting = True
+                    self.color=LBLUE
+                if self.button3.collidepoint(mouse_pos):
+                    #theme 3
+                    self.wallpaper='green.jpg'
+                    self.color=GREEN
+                    self.chatting = True
             if event.type == KEYDOWN:
                 if event.key == K_RSHIFT or event.key== K_LSHIFT:
                     if self.shift:
@@ -139,11 +115,11 @@ class Chat:
                 if len(self.text) > 0 and event.key == K_BACKSPACE:
                     self.text=self.text[:-1]
                 if len(self.text) > 0 and event.key == K_RETURN:
-                    if self.get_state() == S_OFFLINE:
+                    if self.first:
                         self.name=self.text
                         self.text=''
                         #client.login(name)
-                        #self.first=False
+                        self.first=False
                         self.text=''
                         return self.name
                     else:
@@ -180,7 +156,7 @@ class Chat:
                 self.chatlog.append(msg)
         #----------------------------------
         #Your code here
-        if self.get_state() == S_OFFLINE:
+        if self.first:
             self.windowSurface.fill(LBLUE)
             background=pygame.image.load('background3.jpg')
             background=pygame.transform.scale(background, (WINDOWW,WINDOWH))
@@ -209,7 +185,7 @@ class Chat:
 
 
                 
-        elif self.get_state() in (S_CHATTING, S_ENCRYPTED):
+        elif self.chatting:
 
 
 
@@ -218,7 +194,7 @@ class Chat:
             #print to screen
             self.windowSurface.fill(LBLUE)
             #background
-            background=pygame.image.load('background.jpg')
+            background=pygame.image.load(self.wallpaper)
             background=pygame.transform.scale(background, (WINDOWW,WINDOWH))
             self.windowSurface.blit(background,(0,0))
 
@@ -234,15 +210,15 @@ class Chat:
 
             try:
 
-                bar=trect.render_textrect(self.name+": "+str(self.text), self.fontObj30, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.9, WINDOWH*0.2),  (96, 36, 134),(216, 216, 216), 0)
+                bar=trect.render_textrect(self.name+": "+str(self.text), self.fontObj30, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.9, WINDOWH*0.2),  (20, 20, 20),(216, 216, 216), 0)
                 self.windowSurface.blit(bar,(50,480))
             except:
                 self.text=''
-                bar=trect.render_textrect(self.name+": "+str(self.text), self.fontObj30, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.9, WINDOWH*0.2),  (96, 36,134),(216, 216, 216), 0)
+                bar=trect.render_textrect(self.name+": "+str(self.text), self.fontObj30, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.9, WINDOWH*0.2),  (20, 20,20),(216, 216, 216), 0)
                 self.windowSurface.blit(bar,(50,480))
 
             #print page no.
-            textSurfaceObjpage = self.fontObj30.render("Page "+str(self.page), True,PURPLE)
+            textSurfaceObjpage = self.fontObj30.render("Page "+str(self.page), True,self.color)
             textobjpage = textSurfaceObjpage.get_rect()
             textobjpage.left = (WINDOWW*.85)
             textobjpage.top=(WINDOWH*.04)
@@ -324,7 +300,7 @@ class Chat:
                 counter=len(self.chatlog)
             for i in range(self.page*12,counter):
                 self.tstring+=self.chatlog[i]+'\n'
-            hi=trect.render_textrect(self.tstring, self.fontObj30, pygame.Rect((40, 40, 900, 420)), (227, 203, 242),(48,48,48),0)
+            hi=trect.render_textrect(self.tstring, self.fontObj30, pygame.Rect((40, 40, 900, 420)), (220, 220, 220),(48,48,48),0)
             self.windowSurface.blit(hi,(50,60))
             self.tstring=''
 
@@ -333,15 +309,28 @@ class Chat:
 ##            hi=trect.render_textrect(self.tstring, self.fontObj30, pygame.Rect((40, 40, 900, 400)), (216, 216, 216), (48, 48, 48), 0)
 ##            self.windowSurface.blit(hi,(60,60))
 ##            self.tstring=''
-        elif self.get_state() == S_LOGGEDIN:
-            self.windowSurface.fill(LBLUE)
+        else:
+            #choose chat skin theme
+            #self.windowSurface.fill(LBLUE)
             background2=pygame.image.load('background2.jpg')
             background2=pygame.transform.scale(background2, (WINDOWW,WINDOWH))
             self.windowSurface.blit(background2,(0,0))
+
+            textSurfaceObjpage = self.fontObj.render("Welcome to ICS Chat "+ self.name, True,WHITE)
+            textobjpage = textSurfaceObjpage.get_rect()
+            textobjpage.left = 100
+            textobjpage.top=50
+            self.windowSurface.blit(textSurfaceObjpage, textobjpage)
+            textSurfaceObjpage = self.fontObj.render("Pick a color", True,WHITE)
+            textobjpage = textSurfaceObjpage.get_rect()
+            textobjpage.left = 350
+            textobjpage.top=150
+            self.windowSurface.blit(textSurfaceObjpage, textobjpage)
             
-            for i in self.button:
-                if i['name'] != self.name:
-                    pygame.draw.rect(self.windowSurface, [255, 0, 0], i['rect'])
+            
+            pygame.draw.rect(self.windowSurface, [207,44,237], self.button)
+            pygame.draw.rect(self.windowSurface, [32,157,246], self.button2)
+            pygame.draw.rect(self.windowSurface, [54,237,54], self.button3)
             
             
                 
@@ -351,7 +340,15 @@ class Chat:
 def main(args):
     g = Chat()
     g.run_client(args)
-
+    clock = pygame.time.Clock()
+    while True:
+        msg=g.read()
+        if msg: print(msg)
+        if msg: g.client.read_input(msg)
+        msg = g.client.output()
+        #print(msg)
+        g.update(msg)
+        clock.tick(100)
 
 if __name__ == "__main__":
     g = Chat()

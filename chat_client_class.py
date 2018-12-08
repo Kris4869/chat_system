@@ -40,12 +40,6 @@ class Client:
     def shutdown_chat(self):
         return
 
-    def get_state(self):
-        try:
-            return self.sm.get_state()
-        except:
-            return "Something wrong with .sm"
-
     def send(self, msg):
         mysend(self.socket, msg)
 
