@@ -41,7 +41,10 @@ class Client:
         return
 
     def get_state(self):
-        return self.sm.get_state()
+        try:
+            return self.sm.get_state()
+        except:
+            return "Something wrong with .sm"
 
     def send(self, msg):
         mysend(self.socket, msg)

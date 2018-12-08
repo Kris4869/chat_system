@@ -98,9 +98,9 @@ class Server:
             # ==============================================================================
             # handle connect request this is implemented for you
             # ==============================================================================
-            msg = json.loads(msg)
-            print(msg)            
+            msg = json.loads(msg)            
             if msg["action"] == "connect":
+                print(msg)
                 e = msg["encryption"]
                 to_name = msg["target"]
                 from_name = self.logged_sock2name[from_sock]
@@ -127,11 +127,13 @@ class Server:
 # handle messeage exchange: IMPLEMENT THIS
 # ==============================================================================
             elif msg["action"] == "transfer":
+                print(msg)
                 the_guys = self.group.list_me(from_name)[1:]
                 for g in the_guys:
                     to_sock = self.logged_name2sock[g]
                     mysend(to_sock, json.dumps(msg))
             elif msg["action"] == "exchange" and not msg["encryption"]:
+                print(msg)
                 from_name = self.logged_sock2name[from_sock]
                 """Finding the list of people to send to and index message"""
                 
@@ -144,6 +146,7 @@ class Server:
                     mysend(to_sock, json.dumps(msg))
                     self.indices[g].add_msg_and_index(msg["message"])
             elif msg["action"] == "exchange" and msg["encryption"]:
+                print(msg)
                 to_name = msg['to']
                 to_sock = self.logged_name2sock[to_name]
                 mysend(to_sock, json.dumps(msg))
@@ -152,6 +155,7 @@ class Server:
 # the "from" guy has had enough (talking to "to")!
 # ==============================================================================
             elif msg["action"] == "disconnect":
+                print(msg)
                 from_name = self.logged_sock2name[from_sock]
                 the_guys = self.group.list_me(from_name)
                 self.group.disconnect(from_name)

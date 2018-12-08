@@ -81,12 +81,13 @@ class Chat:
 
     def get_members(self):
         self.client.read_input('who')
-        return eval(self.client.output())
+        return self.client.output()
 
     def show_members(self):
         members = self.get_members()
         #--------------------------------------------
         pass
+        #print(members)
         """
         Directly update result here
         """
