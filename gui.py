@@ -331,6 +331,15 @@ class Chat:
             pygame.draw.rect(self.windowSurface, [207,44,237], self.button)
             pygame.draw.rect(self.windowSurface, [32,157,246], self.button2)
             pygame.draw.rect(self.windowSurface, [54,237,54], self.button3)
+
+            #colortags
+            
+            ptag= self.fontObj.render("Purple", True,WHITE)
+            btag= self.fontObj.render("Blue", True,WHITE)
+            gtag= self.fontObj.render("Green", True,WHITE)
+            self.windowSurface.blit(ptag, pygame.Rect(120, 330, 200, 200))
+            self.windowSurface.blit(btag, pygame.Rect(440, 330, 200, 200))
+            self.windowSurface.blit(gtag, pygame.Rect(720, 330, 200, 200))
             
             
                 
