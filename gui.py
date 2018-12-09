@@ -158,12 +158,12 @@ class Chat:
         #Your code here
         if self.first:
             self.windowSurface.fill(LBLUE)
-            background=pygame.image.load('background3.jpg')
+            background=pygame.image.load('login.png')
             background=pygame.transform.scale(background, (WINDOWW,WINDOWH))
             self.windowSurface.blit(background,(0,0))
             
-            pygame.draw.rect(self.windowSurface, WHITE, pygame.Rect(WINDOWW*.05, WINDOWH*.5, WINDOWW*.85, WINDOWH*0.09))
-            pygame.draw.rect(self.windowSurface, WHITE, pygame.Rect(WINDOWW*.9, WINDOWH*.5, WINDOWW*.05, WINDOWW*0.054))
+            #pygame.draw.rect(self.windowSurface, WHITE, pygame.Rect(WINDOWW*.05, WINDOWH*.5, WINDOWW*.85, WINDOWH*0.09))
+            #pygame.draw.rect(self.windowSurface, WHITE, pygame.Rect(WINDOWW*.9, WINDOWH*.5, WINDOWW*.05, WINDOWW*0.054))
             textSurfaceObj1 = self.fontObj.render("Name: "+str(self.text), True,BLACK)
             textobj = textSurfaceObj1.get_rect()
             textobj.left = (WINDOWW*.05)
@@ -174,14 +174,14 @@ class Chat:
 
 
             
-            enter=pygame.image.load('enter.png')
-            enter=pygame.transform.scale(enter, (int(WINDOWW*0.05), int(WINDOWW*0.05)))
-            self.windowSurface.blit(enter,(WINDOWW*0.9,WINDOWH*0.5))
-            if self.shift:
-                pygame.draw.rect(self.windowSurface, WHITE, pygame.Rect(WINDOWW*0, WINDOWH*.5, WINDOWW*.05, WINDOWW*0.054))
-                shiftkey=pygame.image.load('Shift.png')
-                shiftkey=pygame.transform.scale(shiftkey, (int(WINDOWW*0.05), int(WINDOWW*0.05)))
-                self.windowSurface.blit(shiftkey,(WINDOWW*0,WINDOWH*0.5))
+            #enter=pygame.image.load('enter.png')
+            #enter=pygame.transform.scale(enter, (int(WINDOWW*0.05), int(WINDOWW*0.05)))
+            #self.windowSurface.blit(enter,(WINDOWW*0.9,WINDOWH*0.5))
+##            if self.shift:
+##                pygame.draw.rect(self.windowSurface, WHITE, pygame.Rect(WINDOWW*0, WINDOWH*.5, WINDOWW*.05, WINDOWW*0.054))
+##                shiftkey=pygame.image.load('Shift.png')
+##                shiftkey=pygame.transform.scale(shiftkey, (int(WINDOWW*0.05), int(WINDOWW*0.05)))
+##                self.windowSurface.blit(shiftkey,(WINDOWW*0,WINDOWH*0.5))
 
 
                 
