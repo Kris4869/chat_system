@@ -74,7 +74,7 @@ class Chat:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and not(self.chatting)and not(self.first):
                 mouse_pos = event.pos  # gets mouse position
 
                 # checks if mouse position is over the button
