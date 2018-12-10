@@ -1,0 +1,1 @@
+python chat_cmdl_client.py -d localhost
