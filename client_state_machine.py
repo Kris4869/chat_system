@@ -16,6 +16,7 @@ class ClientSM:
         self.out_msg = ''
         self.s = s
         self.members = {}
+        self.magic = False
 
     def set_state(self, state):
         self.state = state
@@ -47,7 +48,7 @@ class ClientSM:
         response = json.loads(myrecv(self.s))
         if response["status"] == "success":
             self.peer = peer
-            self.out_msg += 'You are connected with '+ self.peer + ''
+            self.out_msg += 'You are connected with '+ self.peer + '\n'
             self.members = response["members"]
             return (True)
         elif response["status"] == "busy":
@@ -78,7 +79,7 @@ class ClientSM:
             if len(my_msg) > 0:
 
                 if my_msg == 'q':
-                    self.out_msg += 'See you next time!'
+                    self.out_msg += 'See you next time!\n'
                     self.state = S_OFFLINE
 
                 elif my_msg == 'time':
@@ -89,7 +90,7 @@ class ClientSM:
                 elif my_msg == 'who':
                     mysend(self.s, json.dumps({"action":"list"}))
                     logged_in = json.loads(myrecv(self.s))["results"]
-                    self.out_msg += 'Here are all the users in the system:'
+                    self.out_msg += 'Here are all the users in the system:\n'
                     self.out_msg += logged_in
 
                 elif my_msg[0] == 'c':
@@ -97,7 +98,7 @@ class ClientSM:
                     peer = peer.strip()
                     if self.connect_to(peer) == True:
                         self.state = S_CHATTING
-                        self.out_msg += 'Connect to ' + peer + '. Chat away'
+                        self.out_msg += 'Connect to ' + peer + '. Chat away\n'
                         self.out_msg += ''
                     else:
                         self.out_msg += 'Connection unsuccessful'
@@ -107,12 +108,12 @@ class ClientSM:
                     peer = peer.strip()
                     if self.connect_to(peer, True) == True:
                         self.state = S_ENCRYPTED
-                        self.out_msg += 'Connect to ' + peer + '. Chat away!'
-                        self.out_msg += 'The conversation is encrypted by Elliptic-curve Cryptography. '
-                        self.out_msg += 'No history will be recorded.'
+                        self.out_msg += 'Connect to ' + peer + '. Chat away!\n'
+                        self.out_msg += 'The conversation is encrypted by Elliptic-curve Cryptography.\n'
+                        self.out_msg += 'No history will be recorded.\n'
                         self.out_msg += ''
                     else:
-                        self.out_msg += 'Connection unsuccessful'
+                        self.out_msg += 'Connection unsuccessful\n'
 
                 elif my_msg[0] == '?':
                     term = my_msg[1:].strip()
@@ -121,7 +122,7 @@ class ClientSM:
                     if (len(search_rslt)) > 0:
                         self.out_msg += search_rslt + ''
                     else:
-                        self.out_msg += '\'' + term + '\'' + ' not found'
+                        self.out_msg += '\'' + term + '\'' + ' not found\n'
 
                 elif my_msg[0] == 'p' and my_msg[2:].isdigit(): #Kris Nov 17 2018: 1 -> 2
                     poem_idx = my_msg[1:].strip()
@@ -130,7 +131,7 @@ class ClientSM:
                     if (len(poem) > 0):
                         self.out_msg += poem + ''
                     else:
-                        self.out_msg += 'Sonnet ' + poem_idx + ' not found'
+                        self.out_msg += 'Sonnet ' + poem_idx + ' not found\n'
 
                 else:
                     self.out_msg += menu
@@ -144,18 +145,18 @@ class ClientSM:
             
                 if peer_msg["action"] == "connect":
                     if peer_msg["status"] == "request":
-                        self.out_msg += peer_msg["from"] + " has joined the chat."
+                        self.out_msg += peer_msg["from"] + " has joined the chat.\n"
                         self.members[peer_msg["from"]] = peer_msg["qk"]
                         self.state = S_ENCRYPTED if peer_msg["encryption"] else S_CHATTING
-                        if len(self.members) == 1:
-                            self.out_msg += "The conversation is encrypted by Elliptic-curve Cryptography"
-                            self.out_msg += 'No history will be recorded.'
+                        if len(self.members) == 1 and self.state == S_ENCRYPTED:
+                            self.out_msg += "The conversation is encrypted by Elliptic-curve Cryptography.\n"
+                            self.out_msg += 'No history will be recorded.\n'
                             self.out_msg += ''
                     elif peer_msg["status"] == "no-user":
                         self.peer = ''
-                        self.out_msg += "[ChatSystem]: No such user."
+                        self.out_msg += "[ChatSystem]: No such user.\n"
                     else:
-                        self.out_msg += "[ChatSystem]: How did you wind up here??"
+                        self.out_msg += "[ChatSystem]: How did you wind up here??\n"
                         print_state(peer_msg["status"])
                     
 #==============================================================================
@@ -172,8 +173,11 @@ class ClientSM:
             elif len(my_msg) > 0 and self.state == S_CHATTING:     # my stuff going out
                 mysend(self.s, json.dumps({"action":"exchange", "from":"[" + self.me + "]", "message":my_msg, "encryption": False}))
                 if my_msg == 'bye':
+                    self.magic == False
                     self.disconnect()
                     self.state = S_LOGGEDIN
+                if my_msg == "#!Declare Wizard":
+                    self.magic == True
             elif len(my_msg) > 0 and self.state == S_ENCRYPTED:
                 temp = my_msg[:]
                 for m, qk in self.members.items():
@@ -181,15 +185,18 @@ class ClientSM:
                     mysend(self.s, json.dumps(
                         {"action": "exchange", "from":"[" + self.me + "]", "to": m, "message": msg, "tqk": tqk, "encryption": True}))
                 if temp == "bye":
+                    self.magic = False
                     self.disconnect()
                     self.state = S_LOGGEDIN
+                if temp == "#!Declare Wizard":
+                    self.magic == True
                     
             if len(peer_msg) > 0:    # peer's stuff, coming in
                 peer_msg = json.loads(peer_msg)
                 #print(peer_msg)
                 try:
                     if peer_msg["status"] == "request":
-                        self.out_msg += peer_msg["from"] + " has joined the chat."
+                        self.out_msg += peer_msg["from"] + " has joined the chat.\n"
                         self.members[peer_msg["from"]] = peer_msg["qk"]
                 except KeyError:
                     if peer_msg["action"] == "exchange" and self.state == S_CHATTING:
@@ -199,6 +206,9 @@ class ClientSM:
                         self.out_msg += peer_msg["from"] + ": " + msg
                     elif peer_msg["action"] == "disconnect":
                         self.out_msg += peer_msg["msg"] + "\n"
+                        if peer_msg["close"]:
+                            self.disconnect()
+                            self.state = S_LOGGEDIN
                     else:
                         self.out_msg += "[ChatSystem]: How did you wind up here??"
                         print_state(peer_msg["action"])

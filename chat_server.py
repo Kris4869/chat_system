@@ -154,12 +154,12 @@ class Server:
                 for g in the_guys:
                     to_sock = self.logged_name2sock[g]
                     mysend(to_sock, json.dumps(
-                        {"action": "disconnect", "from": from_name, "msg": "{} left".format(from_name)}))
+                        {"action": "disconnect", "from": from_name, "msg": "{} left".format(from_name), "close": False}))
                 if len(the_guys) == 1:  # only one left
                     g = the_guys.pop()
                     to_sock = self.logged_name2sock[g]
                     mysend(to_sock, json.dumps(
-                        {"action": "disconnect", "from": from_name, "msg": "everyone left, you are alone"}))
+                        {"action": "disconnect", "from": from_name, "msg": "everyone left, you are alone", "close": True}))
 # ==============================================================================
 #                 listing available peers: IMPLEMENT THIS
 # ==============================================================================

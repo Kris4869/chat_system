@@ -50,7 +50,7 @@ class Chat:
         self.fontObj = pygame.font.Font('freesansbold.ttf', 50)
         self.fontObj30 = pygame.font.Font('freesansbold.ttf', 30)
         self.windowSurface = pygame.display.set_mode((WINDOWW, WINDOWH), 0, 32)
-        pygame.display.set_caption('ICS Chat System')
+        pygame.display.set_caption('Find Love')
         self.chatlog=[]
         self.logobj=[]
         self.first=True
@@ -145,15 +145,15 @@ class Chat:
 
     def update(self, msg):
         if msg != None:
-            if len(msg) >120:
-                self.chatlog.append(msg[:60])
-                self.chatlog.append(msg[60:120])
-                self.chatlog.append(msg[120:])
-            elif len(msg) >60:
-                self.chatlog.append(msg[:60])
-                self.chatlog.append(msg[60:])
-            else:
-                self.chatlog.append(msg)
+##            if len(msg) >120:
+##                self.chatlog.append(msg[:60])
+##                self.chatlog.append(msg[60:120])
+##                self.chatlog.append(msg[120:])
+##            elif len(msg) >60:
+##                self.chatlog.append(msg[:60])
+##                self.chatlog.append(msg[60:])
+##            else:
+            self.chatlog.append(msg)
         #----------------------------------
         #Your code here
         if self.first:
