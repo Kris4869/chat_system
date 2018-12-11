@@ -14,7 +14,13 @@ from protocol import Rabbit
 class Curves(object):
 
     DOMAINS = {
-    # Bits : (p, order of E(GF(P)), parameter b, base point x, base point y)
+        
+    #Bits: (p, order of E(GF(P)), parameter b, base point x, base point y)
+    #Defined as:
+    #Curve E(b, p): y ** 2 = x ** 3 + x + b (mod p)
+    #Base Point G: (x, y)
+    #Order N: Not used as no signatures involved
+        
     192 : (0xfffffffffffffffffffffffffffffffeffffffffffffffff,
            0xffffffffffffffffffffffff99def836146bc9b1b4d22831,
            0x64210519e59c80e70fa7e9ab72243049feb8deecc146b9b1,
@@ -102,20 +108,20 @@ class MsgECC(object):
         self.private_key = private_key
 
 
-    def encrypt(self, encrypter = Rabbit):
+    def encrypt(self, coding = Rabbit):
         bits, q = self.public_key
         bits, cn, n, cp, cq, g = Curves(bits).get_curve()
         k = randint(1, n - 1)        
-        kg = mulp(cp, cq, cn, g, k)         
-        sg = mulp(cp, cq, cn, q, k)         
-        return encrypter(sg[0]).encrypt(self.msg), kg
+        kg = mulp(cp, cq, cn, g, k)          
+        sg = mulp(cp, cq, cn, q, k)
+        return coding(sg[0]).encrypt(self.msg), kg
     
-    def decrypt(self, decrypter = Rabbit):
+    def decrypt(self, coding = Rabbit):
         bits, d = self.private_key
         kg = self.public_key
         bits, cn, n, cp, cq, g = Curves(bits).get_curve()
-        sg = mulp(cp, cq, cn, kg, d)    
-        return decrypter(sg[0]).decrypt(self.msg)
+        sg = mulp(cp, cq, cn, kg, d)
+        return coding(sg[0]).decrypt(self.msg)
 
 if __name__ == "__main__":
     

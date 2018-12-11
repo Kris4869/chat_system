@@ -15,8 +15,8 @@ Choose one of the following commands:
 time: calendar time in the system
 who: to find out who else are there
 c _peer_: to connect to the _peer_ and chat
-e _peer_: to connect to the _peer_ with ECC encryption
-? _term_: to search your chat logs where _term_ appears
+e _peer_: to chat with ECC encryption
+? _term_: to search your chat logs
 p _#_: to get number <#> sonnet
 esc: to leave the chat system
 -------------------------------------------------------------

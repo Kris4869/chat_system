@@ -242,7 +242,7 @@ class Server:
                     sock, address = self.server.accept()
                     self.new_client(sock)
             except Exception as err:
-                print(err)
+                self.run()
 
 
 def main():

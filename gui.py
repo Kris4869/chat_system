@@ -27,9 +27,9 @@ WINDOWW = 1000
 WINDOWH = 600
 
 keyboard = \
-['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0',' ',',','.','/','[',']',';','\\','=','-','`']
+['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0',' ',',','.','/','[',']',';','\\','=','-','`',"'"]
 skeyboard = \
-['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','!','@','#','$','%','^','&','*','(',')',' ','<','>','?','{','}',':','|','+','_','~']
+['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','!','@','#','$','%','^','&','*','(',')',' ','<','>','?','{','}',':','|','+','_','~','"']
 
 TALL = 18
 
@@ -59,6 +59,7 @@ class Chat:
         self.name=''
         self.shift=False
         self.page=0
+        self.lockpage = False
         self.color=PURPLE
 
     def run_client(self, args):
@@ -114,8 +115,10 @@ class Chat:
                         self.shift=True
                 if event.key == K_LEFT and self.page > 0:
                     self.page-=1
+                    self.lockpage = True
                 if event.key == K_RIGHT:
                     self.page+=1
+                    self.lockpage = True
                 #if textobj.right < WINDOWW*.9:
                 if True:
                     #if text have not exceeded right bound,enter text onto screen
@@ -156,7 +159,7 @@ class Chat:
 
     def update(self, msg):
         if msg != None:
-
+            self.pagelock = False
             self.chatlog += msg.split('\n')
 
         if self.first:
@@ -201,7 +204,7 @@ class Chat:
             
             
 #            if not (len(self.chatlog)) % TALL:
-            self.page = max(self.page, int((len(self.chatlog) - 1) / TALL))
+            if not self.lockpage: self.page = max(self.page, int((len(self.chatlog) - 1) / TALL))
             if len(self.chatlog) > (self.page + 1) * TALL:
                 counter = (self.page + 1) * TALL
             else:

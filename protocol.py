@@ -1,3 +1,6 @@
+#
+
+
 WORDSIZE = 0x100000000
 
 rot08 = lambda x: ((x <<  8) & 0xFFFFFFFF) | (x >> 24)
