@@ -9,7 +9,19 @@ CHAT_IP = ''#socket.gethostbyname(socket.gethostname())
 CHAT_PORT = 1112
 SERVER = (CHAT_IP, CHAT_PORT)
 
-menu = """commands:time,who,c peer,e peer,? term, p#, q"""
+menu = """
+-------------------------------------------------------------
+Choose one of the following commands:
+time: calendar time in the system
+who: to find out who else are there
+c _peer_: to connect to the _peer_ and chat
+e _peer_: to connect to the _peer_ with ECC encryption
+? _term_: to search your chat logs where _term_ appears
+p _#_: to get number <#> sonnet
+esc: to leave the chat system
+-------------------------------------------------------------
+"""
+
 
 S_OFFLINE   = 0
 S_CONNECTED = 1
