@@ -67,6 +67,19 @@ class Chat:
         c_thread.daemon = True
         c_thread.start()
 
+        clock = pygame.time.Clock()
+        while "Kris":
+            try:
+                msg = self.read()
+                if msg: print(msg)
+                if msg: self.client.read_input(msg)
+                msg = self.client.output()
+                #print(msg)
+                self.update(msg)
+                clock.tick(100)
+            except Exception as err:
+                print(err)
+
 
     def read(self):
         for event in pygame.event.get():
@@ -169,8 +182,6 @@ class Chat:
             background=pygame.transform.scale(background, (WINDOWW,WINDOWH))
             self.windowSurface.blit(background,(0,0))
 
-        self.windowSurface.blit(textSurfaceObj1, textobj)
-
             try:
 
                 bar = render_textrect(self.name+": "+str(self.text), self.fontObj30, pygame.Rect(WINDOWW*.05, WINDOWH*.9, WINDOWW*.9, WINDOWH*0.2),  (20, 20, 20),(216, 216, 216), 0)
@@ -189,18 +200,18 @@ class Chat:
 
             
             
-            if ((len(self.chatlog)-1) % TALL)==0:
-                self.page = int((len(self.chatlog)-1) / TALL)
-            if len(self.chatlog) > (self.page+1) * TALL:
-                counter=(self.page+1) * TALL
+#            if not (len(self.chatlog)) % TALL:
+            self.page = max(self.page, int((len(self.chatlog) - 1) / TALL))
+            if len(self.chatlog) > (self.page + 1) * TALL:
+                counter = (self.page + 1) * TALL
             else:
-                counter=len(self.chatlog)
+                counter = len(self.chatlog)
 
+
+            turn = self.page
             filtr = 0
-            while True:
-                print(len(self.chatlog), self.page, self.page * TALL, filtr, counter)
-
-                
+            aturn = -1
+            while 1:               
                 try:
                     for k in range(self.page * TALL, filtr):
                         self.tstring += self.chatlog[k] + '\n'
@@ -214,6 +225,10 @@ class Chat:
                 except TextRectException as err:
                     print(err)
                     filtr = -~filtr
+                    if aturn:
+                        turn = -~self.page
+                        aturn = -~aturn
+            self.page = turn
 
 
             self.windowSurface.blit(prehi,(50,60))            
@@ -258,15 +273,7 @@ class Chat:
 def main(args):
     g = Chat()
     g.run_client(args)
-    clock = pygame.time.Clock()
-    while True:
-        msg=g.read()
-        if msg: print(msg)
-        if msg: g.client.read_input(msg)
-        msg = g.client.output()
-        #print(msg)
-        g.update(msg)
-        clock.tick(100)
+
 
 if __name__ == "__main__":
     g = Chat()

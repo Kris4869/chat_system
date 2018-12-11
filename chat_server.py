@@ -225,21 +225,24 @@ class Server:
 # ==============================================================================
     def run(self):
         print('starting server...')
-        while(1):
-            read, write, error = select.select(self.all_sockets, [], [])
-            print('checking logged clients..')
-            for logc in list(self.logged_name2sock.values()):
-                if logc in read:
-                    self.handle_msg(logc)
-            print('checking new clients..')
-            for newc in self.new_clients[:]:
-                if newc in read:
-                    self.login(newc)
-            print('checking for new connections..')
-            if self.server in read:
-                # new client request
-                sock, address = self.server.accept()
-                self.new_client(sock)
+        while 1:
+            try:
+                read, write, error = select.select(self.all_sockets, [], [])
+                print('checking logged clients..')
+                for logc in list(self.logged_name2sock.values()):
+                    if logc in read:
+                        self.handle_msg(logc)
+                print('checking new clients..')
+                for newc in self.new_clients[:]:
+                    if newc in read:
+                        self.login(newc)
+                print('checking for new connections..')
+                if self.server in read:
+                    # new client request
+                    sock, address = self.server.accept()
+                    self.new_client(sock)
+            except Exception as err:
+                print(err)
 
 
 def main():
