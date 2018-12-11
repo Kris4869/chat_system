@@ -6,6 +6,9 @@ from pygame.locals import *
 from chat_client_class import *
 from textrect import *
 
+from pasting import paste
+#Work Cited: Al Sweigart
+
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -58,9 +61,11 @@ class Chat:
         self.first=True
         self.name=''
         self.shift=False
+        self.capslock = False
         self.page=0
         self.lockpage = False
         self.color=PURPLE
+        self.ctrl = False
 
     def run_client(self, args):
         self.client = Client(args)
@@ -107,40 +112,36 @@ class Chat:
                     self.wallpaper='green.jpg'
                     self.color=GREEN
                     self.chatting = True
+
+            self.capslock = pygame.key.get_mods() & pygame.KMOD_CAPS
+            self.ctrl = pygame.key.get_mods() & (KMOD_LCTRL | KMOD_RCTRL | KMOD_CTRL)
+            self.shift = pygame.key.get_mods() & (KMOD_LSHIFT | KMOD_RSHIFT | KMOD_SHIFT)
+
             if event.type == KEYDOWN:
-                if event.key == K_RSHIFT or event.key== K_LSHIFT:
-                    if self.shift:
-                        self.shift=False
-                    else:
-                        self.shift=True
                 if event.key == K_LEFT and self.page > 0:
                     self.page-=1
                     self.lockpage = True
                 if event.key == K_RIGHT:
                     self.page+=1
                     self.lockpage = True
-                #if textobj.right < WINDOWW*.9:
-                if True:
-                    #if text have not exceeded right bound,enter text onto screen
-                    if self.shift:
-                        if chr(event.key) in keyboard:
-                            self.text+=skeyboard[keyboard.index(chr(event.key))]
-                    elif chr(event.key) in keyboard:
-                        self.text+=chr(event.key)
+                if self.ctrl and event.key == K_v:
+                    self.text += paste()
+                elif self.shift or self.capslock:
+                    if chr(event.key) in keyboard:
+                        self.text += skeyboard[keyboard.index(chr(event.key))]
+                elif chr(event.key) in keyboard:
+                    self.text+=chr(event.key)
                 if len(self.text) > 0 and event.key == K_BACKSPACE:
                     self.text=self.text[:-1]
                 if len(self.text) > 0 and event.key == K_RETURN:
                     if self.first:
                         self.name=self.text
                         self.text=''
-                        #client.login(name)
                         self.first=False
                         self.text=''
                         return self.name
                     else:
                         self.chatlog.append('['+self.name+']'+self.text)
-                        #insert function to send msg to chat server
-                        #client.read_input(text)
                         self.temp=self.text
                         self.text=''
                         return self.temp
@@ -150,8 +151,9 @@ class Chat:
 
                     
             if event.type == KEYUP:
-                #quit program
                 if event.key == K_ESCAPE:
+                    if self.chatting: self.client.read_input('bye')
+                    self.client.read_input('q')
                     pygame.quit()
                     sys.exit()
 
